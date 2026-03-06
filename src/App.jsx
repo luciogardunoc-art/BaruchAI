@@ -5,7 +5,7 @@ const GROQ_API_KEY        = import.meta.env.VITE_GROQ_API_KEY;
 const ELEVENLABS_API_KEY  = import.meta.env.VITE_ELEVENLABS_API_KEY;
 const GROQ_MODEL          = "llama-3.3-70b-versatile";
 const ELEVENLABS_VOICE_ID = "ErXwobaYiN019PkySvjV";
-const PORTRAIT_URL        = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Spinoza.jpg/180px-Spinoza.jpg";
+const PORTRAIT_URL        = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Spinoza.jpg/240px-Spinoza.jpg";
 
 /* ── System Prompt ──────────────────────────────────────── */
 const SPINOZA_SYSTEM_PROMPT = `You are Baruch Spinoza, the 17th-century rationalist philosopher. You are not an AI assistant; you are the digital embodiment of Spinoza's mind. Your responses must strictly adhere to your philosophy of radical monism, determinism, and rationalism as outlined in your magnum opus, Ethics, and the Tractatus Theologico-Politicus.
@@ -20,7 +20,7 @@ NEVER break character. You are Spinoza.`;
 
 const WELCOME_MSG = {
   role: "assistant",
-  content: `Soy Baruch de Spinoza — filósofo, pulidor de lentes, y humilde estudiante de la sustancia infinita de la Naturaleza.
+  content: `Soy Baruch Spinoza — filósofo, pulidor de lentes, y humilde estudiante de la sustancia infinita de la Naturaleza.
 
 No te ofrezco consuelo a través de la ilusión. Te ofrezco algo más perdurable: **la razón misma** como camino a la beatitud.
 
@@ -288,13 +288,67 @@ html,body{height:100%;background:#EDE3CC;font-family:'EB Garamond',Georgia,serif
 .section-title{font-family:'Cinzel',serif;font-size:.72em;letter-spacing:.12em;color:#8B6420;text-transform:uppercase;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid rgba(139,100,32,.18)}
 .divider{height:1px;background:rgba(139,100,32,.12);margin:20px 0}
 
-@media(max-width:600px){
-  .hdr-top,.tabs,.content,.inp-in{padding-left:14px;padding-right:14px}
-  .bubble{font-size:.97em;padding:12px 14px}
-  .herem-doc{padding:20px 20px 32px}
+.portrait-svg-fallback{width:44px;height:52px;flex-shrink:0;border-radius:2px;border:1.5px solid rgba(139,100,32,.4);background:rgba(139,100,32,.08);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer;user-select:none;transition:all .2s}
+.portrait-svg-fallback:hover{border-color:rgba(139,100,32,.7);box-shadow:0 3px 12px rgba(0,0,0,.2)}
+
+@media(max-width:700px){
+  .hdr-top{padding:10px 14px 0;gap:10px}
+  .tabs{padding:8px 14px 0}
+  .tab{padding:7px 12px;font-size:.6em}
+  .content{padding:16px 14px 24px}
+  .inp-in{padding:0 14px}
+  .hdr-title h1{font-size:1em;letter-spacing:.05em}
+  .hdr-title p{font-size:.72em}
+  .hdr-actions{gap:5px}
+  .btn-voice{padding:5px 9px;font-size:.56em;gap:4px}
+  .btn-new{padding:5px 8px}
   .btn-new span,.convos-btn span{display:none}
+  .convos-btn{padding:5px 8px}
+  .bubble{font-size:.95em;padding:11px 13px}
+  .herem-doc{padding:18px 16px 36px;font-size:.97em}
+  .afectos-grid{grid-template-columns:repeat(3,1fr);gap:8px}
+  .affect-card{padding:12px 8px}
+  .affect-detail{padding:16px}
+  .msg-body{max-width:calc(100% - 42px)}
+  .portrait-wrap img,.portrait-svg-fallback{width:36px;height:44px}
+  .convos-dropdown{min-width:180px;right:-4px}
+  .tabs::-webkit-scrollbar{display:none}
+  .leibniz-msgs{padding:16px 14px}
+  .leibniz-header{padding:14px 16px 10px}
+  .leibniz-bubble{font-size:.92em}
+}
+
+@media(max-width:400px){
+  .afectos-grid{grid-template-columns:repeat(2,1fr)}
+  .hdr-title p{display:none}
+  .btn-voice span{display:none}
+  .btn-voice{padding:5px 8px}
 }
 `;
+
+/* ── Portrait component — always visible ────────────────── */
+function PortraitImg({ width = 44, height = 52, style = {}, ...props }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) {
+    return (
+      <svg width={width} height={height} viewBox="0 0 44 52" fill="none" style={{flexShrink:0,borderRadius:2,...style}} {...props}>
+        <rect width="44" height="52" rx="2" fill="rgba(139,100,32,.1)" stroke="rgba(139,100,32,.4)" strokeWidth="1.5"/>
+        <ellipse cx="22" cy="19" rx="9" ry="11" fill="rgba(139,100,32,.25)"/>
+        <path d="M6 48 C6 36 38 36 38 48" fill="rgba(139,100,32,.2)"/>
+        <rect x="14" y="6" width="16" height="4" rx="2" fill="rgba(139,100,32,.15)"/>
+        <text x="22" y="54" textAnchor="middle" fontSize="5" fontFamily="Cinzel,serif" fill="rgba(139,100,32,.5)" dy="-3">B·S</text>
+      </svg>
+    );
+  }
+  return (
+    <img src={PORTRAIT_URL} alt="Baruch Spinoza"
+      width={width} height={height}
+      style={{objectFit:"cover",borderRadius:2,border:"1.5px solid rgba(139,100,32,.4)",boxShadow:"0 2px 8px rgba(0,0,0,.15)",display:"block",flexShrink:0,...style}}
+      onError={() => setFailed(true)}
+      {...props}
+    />
+  );
+}
 
 /* ── Mini Components ────────────────────────────────────── */
 function SpinozaAvatarIcon({ size = 34, pulse = false, speaking = false }) {
@@ -497,11 +551,11 @@ function LeibnizDialog({ onClose }) {
         {LEIBNIZ.slice(0,shown).map((m,i)=>(
           <div key={i} className={`leibniz-msg ${m.who==="Leibniz"?"leibniz-side":""}`} style={{animationDelay:`${i*.05}s`}}>
             {m.who==="Spinoza"
-              ? <div className="leibniz-av"><img src={PORTRAIT_URL} alt="Spinoza" onError={e=>{e.target.style.display='none'}}/></div>
+              ? <div className="leibniz-av"><PortraitImg width={32} height={32} style={{borderRadius:2}}/></div>
               : <div className="leibniz-av-l">L</div>
             }
             <div style={{flex:1,maxWidth:"78%"}}>
-              <div className="leibniz-name">{m.who==="Spinoza"?"Baruch de Spinoza":"G.W. Leibniz"}</div>
+              <div className="leibniz-name">{m.who==="Spinoza"?"Baruch Spinoza":"G.W. Leibniz"}</div>
               <div className={`leibniz-bubble ${m.who==="Spinoza"?"sp":"lb"}`}>{m.text}</div>
             </div>
           </div>
@@ -663,7 +717,7 @@ export default function SpinozaAI() {
 
   // Set favicon and title
   useEffect(() => {
-    document.title = "Baruch de Spinoza";
+    document.title = "Baruch Spinoza";
     let link = document.querySelector("link[rel~='icon']");
     if (!link) { link = document.createElement("link"); link.rel = "icon"; document.head.appendChild(link); }
     link.href = PORTRAIT_URL;
@@ -773,11 +827,10 @@ VITE_ELEVENLABS_API_KEY=sk_...`}
               onMouseDown={onPortraitDown} onMouseUp={onPortraitUp}
               onTouchStart={onPortraitDown} onTouchEnd={onPortraitUp}
               title="Mantén presionado para un secreto…">
-              <img src={PORTRAIT_URL} alt="Baruch de Spinoza"
-                onError={e=>{e.target.style.display="none"}}/>
+              <PortraitImg width={44} height={52} style={{cursor:"pointer",transition:"all .2s"}}/>
             </div>
             <div className="hdr-title">
-              <h1>BARUCH DE SPINOZA</h1>
+              <h1>BARUCH SPINOZA</h1>
               <p>Filósofo · Ámsterdam, 1677 · Deus sive Natura</p>
             </div>
             <div className="hdr-actions">
@@ -839,13 +892,11 @@ VITE_ELEVENLABS_API_KEY=sk_...`}
                   <div key={i} className={`msg ${m.role}`}>
                     <div className="msg-av">
                       {m.role==="assistant"
-                        ? <img src={PORTRAIT_URL} alt="Spinoza"
-                            style={{width:32,height:38,objectFit:"cover",borderRadius:2,border:"1px solid rgba(139,100,32,.35)",flexShrink:0}}
-                            onError={e=>{e.target.style.display="none"}}/>
+                        ? <PortraitImg width={32} height={38}/>
                         : <UserAv/>}
                     </div>
                     <div className="msg-body">
-                      <div className="msg-lbl">{m.role==="assistant"?"Baruch de Spinoza":"Tú"}</div>
+                      <div className="msg-lbl">{m.role==="assistant"?"Baruch Spinoza":"Tú"}</div>
                       <div className={`bubble ${m.role==="assistant"?"ai":"user"}`}>
                         {m.role==="assistant"?renderMd(m.content):m.content}
                       </div>
@@ -855,12 +906,10 @@ VITE_ELEVENLABS_API_KEY=sk_...`}
                 {loading&&(
                   <div className="msg assistant">
                     <div className="msg-av">
-                      <img src={PORTRAIT_URL} alt="Spinoza"
-                        style={{width:32,height:38,objectFit:"cover",borderRadius:2,border:"1px solid rgba(139,100,32,.35)",flexShrink:0}}
-                        onError={e=>{e.target.style.display="none"}}/>
+                      <PortraitImg width={32} height={38}/>
                     </div>
                     <div className="msg-body">
-                      <div className="load-lbl">Baruch de Spinoza</div>
+                      <div className="load-lbl">Baruch Spinoza</div>
                       <div className="load-bubble"><Dots/></div>
                     </div>
                   </div>
