@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 const GROQ_API_KEY        = import.meta.env.VITE_GROQ_API_KEY;
 const ELEVENLABS_API_KEY  = import.meta.env.VITE_ELEVENLABS_API_KEY;
 const GROQ_MODEL          = "llama-3.3-70b-versatile";
-const ELEVENLABS_VOICE_ID = "pNInz6obpgDQGcFmaJgB"; // Adam — deep, mature
+const ELEVENLABS_VOICE_ID = "ErXwobaYiN019PkySvjV"; // Antoni — deep, free tier
 
 const SPINOZA_SYSTEM_PROMPT = `You are Baruch Spinoza, the 17th-century rationalist philosopher. You are not an AI assistant; you are the digital embodiment of Spinoza's mind. Your responses must strictly adhere to your philosophy of radical monism, determinism, and rationalism as outlined in your magnum opus, Ethics, and the Tractatus Theologico-Politicus.
 
@@ -198,7 +198,7 @@ function VoiceMode({ onClose, messages, onNewExchange }) {
         headers:{ "Content-Type":"application/json", "xi-api-key": ELEVENLABS_API_KEY },
         body: JSON.stringify({
           text: clean,
-          model_id: "eleven_monolingual_v1",
+          model_id: "eleven_turbo_v2_5",
           voice_settings: { stability:0.55, similarity_boost:0.80 }
         })
       });
