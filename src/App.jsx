@@ -502,7 +502,7 @@ export default function SpinozaAI() {
         .bubble{padding:16px 20px;border-radius:2px;line-height:1.82;font-size:1.04em;color:#D4C5A9}
         .bubble.ai{background:linear-gradient(135deg,#1A1409,#141008);
           border:1px solid rgba(201,169,110,.11);border-left:2px solid rgba(201,169,110,.28);position:relative}
-        .bubble.ai::before{content:'\\275D';position:absolute;top:9px;right:13px;
+        .bubble.ai::before{content:'"';position:absolute;top:9px;right:13px;
           font-size:1.7em;color:rgba(201,169,110,.055);font-family:Georgia,serif;line-height:1}
         .bubble.user{background:linear-gradient(135deg,#0F1520,#0A1018);
           border:1px solid rgba(139,158,183,.11);border-right:2px solid rgba(139,158,183,.24);
